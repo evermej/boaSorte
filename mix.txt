@@ -1,0 +1,16 @@
+https://api-whats.com
+    api de whatsapp
+
+https://www.youtube.com/watch?v=Xzfn6vDuUEU
+    tutorial de enviar mensajes de whatsapp
+
+https://dashboard.nexmo.com/
+    envio de sms con laravel
+    user:
+    password:123456aA
+
+
+
+CREAR UN OBSERVER PARA MANDAR EL MENSAJE
+    https://www.youtube.com/watch?v=XxV9kUyne_w  no sirvio
+    https://www.youtube.com/watch?v=XyUH2uVu-oQ  probar
