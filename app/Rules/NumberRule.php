@@ -14,18 +14,10 @@ class NumberRule implements Rule
 
     public function passes($attribute, $value)
     {
-        // $values = explode(',',$value);
-
+        
         $expresion = '/\d{4}/';              //debe haber 4 digitos
-
-        // foreach ($values as $value) {
-            
-            if (preg_match($expresion,$value)) {
-                return true;
-            }else {
-                return false;
-            }
-        // }
+        
+        return (preg_match($expresion,$value)) ? true : false;
     }
 
     

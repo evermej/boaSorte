@@ -100,10 +100,9 @@
         </main>
     </div>
 </body>
-<script src="https://code.jquery.com/jquery-3.3.1.min.js" 
-        integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" 
-        crossorigin="anonymous">
-</script> 
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
+
 <script>
     $('svg.radial-progress').each(function( index, value ) { 
         $(this).find($('circle.complete')).removeAttr( 'style' );
@@ -129,5 +128,41 @@
             }
         });
     }).trigger('scroll');
+
+    $(function(){
+        $("form[name='formtobuy']").submit(function(e){
+            e.preventDefault();
+            var message = document.getElementById('message');
+            var strong = document.getElementById("strong");
+
+            $.ajax({
+                url:"{{route('bs.bought')}}",
+                type: "POST",
+                data: $(this).serialize(),
+                datatype: "json",
+                success: function(res){
+                    let response = JSON.parse(res)
+                    // console.log(response.success)
+                    if (response.message == "numero existente" && response.success == false) {
+                        message.setAttribute('class', 'alert alert-danger p-2 my-2');
+                        strong.innerHTML = "este numero ja existe.";
+                    } else {
+                        message.setAttribute('class', 'alert alert-success p-2 my-2');
+                        strong.innerHTML = "A compra foi um successo,  obrigado e boa sorte.";
+                    }
+                },
+                error:function(res){
+                    message.setAttribute('class', 'alert alert-danger p-2 my-2');
+                    strong.innerHTML = "Verifique os campos preenchidos e tente novamente.";
+
+                    // let response = JSON.parse(res)
+                    // console.log(response)
+                    
+                }
+            });
+            
+
+        });
+    });
 </script>
 </html>

@@ -10,15 +10,16 @@ class NumberObserver
     
     public function created(Number $number)
     {
+        
         $progress = Number::where('pago','yes')->count();
        
-        if ($progress >= 5) {           //cuenta de sorteo
+        if ($progress >= 6) {                          //cuenta de sorteo
 
-            $aleatorio = Number::find(rand(1,5));      //un id aleatorio
+            $nRandom = Number::find(rand(1,6));      //un id aleatorio
             Winner::create([
-                'number' => $aleatorio->number,
-                'buyer_id' => $aleatorio->buyer->id,       //relacion Number con Buyer
-                'user_id' => $aleatorio->seller->id,    //relacion Number con User para el vendedor
+                'number' => $nRandom->number,
+                'buyer_id' => $nRandom->buyer->id,       //relacion Number con Buyer
+                'user_id' => $nRandom->seller->id,       //relacion Number con User para el vendedor
             ]);
             Number::truncate();
             

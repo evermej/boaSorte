@@ -7,6 +7,7 @@ use App\Rules\cpfRule;
 use App\Rules\phoneRule;
 use App\Rules\NumberRule;
 use App\Rules\NameRule;
+use Illuminate\Support\Facades\Auth;
 
 class SaleRequest extends FormRequest
 {
@@ -14,7 +15,7 @@ class SaleRequest extends FormRequest
     
     public function authorize()
     {
-        return true;
+        return Auth::user() ? true : false;
     }
 
     
@@ -28,23 +29,21 @@ class SaleRequest extends FormRequest
         ];
     }
 
-    public function messages()
-    {
-        return [
-            'number.required'=>'o campo numero e obrigatorio.',
-            'number.unique'=>'este numero ja existe.',
-            'number.size'=>'o numero deve ter 4 digitos.',
-            // 'number.integer'=>'este campo e numerico',
-            'number.min'=>'o numero nao pode ser negativo',
-            'number.max'=>'O Numero deve conter 4 digitos',
-            // 'number.digits_between'=>'um numero entre 0000 a 9999',
-            'number.size'=>'o numero deve ter 4 digitos',
-            'name.required'=>'o nome e obrigatorio.',
-            'cpf.required'=>'o cpf e obrigatorio.',
-            'cpf.size'=>'o cpf e de 14 caracteres.',
-            'telephone.required' => 'o telephone e obrigatorio',
-            'telephone.numeric' => 'este campo e numerico',
-        ];
+    // public function messages()
+    // {
+    //     return [
+    //         'number.required'=>'o campo numero e obrigatorio.',
+    //         'number.unique'=>'este numero ja existe.',
+    //         'number.size'=>'o numero deve ter 4 digitos.',
+    //         'number.min'=>'o numero nao pode ser negativo',
+    //         'number.max'=>'O Numero deve conter 4 digitos',
+    //         'number.size'=>'o numero deve ter 4 digitos',
+    //         'name.required'=>'o nome e obrigatorio.',
+    //         'cpf.required'=>'o cpf e obrigatorio.',
+    //         'cpf.size'=>'o cpf e de 14 caracteres.',
+    //         'telephone.required' => 'o telephone e obrigatorio',
+    //         'telephone.numeric' => 'este campo e numerico',
+    //     ];
 
-    }
+    // }
 }

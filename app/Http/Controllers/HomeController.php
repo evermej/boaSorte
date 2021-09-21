@@ -8,6 +8,14 @@ use App\Models\Number;
 use App\Http\Requests\SaleRequest;
 use App\Models\Winner;
 use Illuminate\Support\Facades\Route;
+// use App\Rules\NumberRule;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use App\Rules\cpfRule;
+use App\Rules\phoneRule;
+use App\Rules\NumberRule;
+use App\Rules\NameRule;
+
 
 class HomeController extends Controller
 {
@@ -18,7 +26,7 @@ class HomeController extends Controller
         $porcentaje = $progress / 5;
 
         return view('bs.index', compact('porcentaje'));
-        // return Route::currentRouteName();
+        
     }
 
     public function toBuy()
@@ -27,15 +35,28 @@ class HomeController extends Controller
         return view('bs.to_buy',  compact('seller'));
     }
 
-    public function bought(SaleRequest $request)
-    {
+    public function bought(Request $request)
+    {   
+        if (Number::where('number', $request->number)->exists()) {
+            $purchase['success'] = false;
+            $purchase['message'] =  'numero existente';
+            return json_encode($purchase);
+        }
+
+        $request->validate([
+            'number' => ['required','unique:numbers', 'numeric', 'min:0', 'max:9999', new NumberRule()],
+            'name' => ['required', new NameRule()],
+            'cpf' => ['required','size:14', new cpfRule()],
+            'telephone' => ['required','numeric', new phoneRule()]
+        ]);
+
         $buyer = Buyer::updateOrCreate(
             ['name' => $request->name],                                     //si existe
             ['cpf' => $request->cpf, 'telephone' => $request->telephone]    // actualiza
         );                                                                  //de lo contrario crea modelo combinando las matrices
 
 
-        [$seller] = User::select('id')->where('name', $request->seller)->get();//vendedor
+        [$seller] = User::select('id')->where('name', $request->seller)->get(); //vendedor
 
         Number::create([                                                       //con observer para crear ganador
             'number' => $request->number,
@@ -44,9 +65,10 @@ class HomeController extends Controller
             'pago' => $request->pago
         ]);
 
-        return redirect()->route('bs.tobuy')->with('message', 'obrigado pela sua compra');
-        // return var_dump($request->number);
-    
+        $purchase['success'] = true;
+        $purchase['message'] =  'Ok.';
+        return json_encode($purchase);
+        
     }
 
 
@@ -54,26 +76,5 @@ class HomeController extends Controller
     {
         $winners = Winner::all();
         return view('bs.lastswinners', compact('winners'));
-        // return Route::currentRouteName();
     }
 }
-
-
-
-
-// $obPayload = (new Payload)
-// ->setPixKey('63195129388')
-// ->setDescription('pagamento de compra online')
-// ->setMerchantName('ever mejia')
-// ->setMerchantCity('fortaleza')
-// ->setAmount(100.00)
-// ->setTxId('everdevs');
-
-// $payload_Code = $obPayload->getPayload();
-
-// $obQrCode = new QrCode('1033340641');
-// $image = (new Output\Png)->output($obQrCode, 400);
-
-// header('Content-Type: image/png');
-// echo $image;
-// echo $payload_Code;
